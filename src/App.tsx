@@ -1,25 +1,44 @@
 import React from 'react';
-import logo from './logo.svg';
+import { nanoid } from 'nanoid';
+import Form from './components/Form';
+import ListComments from './components/ListComments';
 import './App.css';
+import { IComment } from './types/Comment';
 
 function App() {
+  const [comments, setComments] = React.useState<IComment[]>([]);
+
+  function createComment(text: string, user: string): void {
+    const newComment = {
+      id: nanoid(),
+      text,
+      user,
+      replies: [],
+    };
+
+    setComments((initial) => [...initial, newComment]);
+  }
+
+  function addReply(id: string, reply: { user: string; text: string }) {
+    setComments((comments) => {
+      return comments.map((comment) => {
+        if (comment.id === id) {
+          return {
+            ...comment,
+            replies: comment.replies!.concat([{ ...reply, id: nanoid() }]),
+          };
+        }
+
+        return comment;
+      });
+    });
+  }
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <>
+      <ListComments comments={comments} addReply={addReply} />
+      <Form onCreateComment={createComment} />
+    </>
   );
 }
 

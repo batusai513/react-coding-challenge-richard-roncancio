@@ -1,22 +1,30 @@
-import React, {ChangeEvent} from "react";
+import React, { ChangeEvent } from 'react';
 
 interface Props {
-  onChange: (value: string) => void
+  onChange: (value: string, name: string) => void;
   value: string;
   label: string;
   placeholder: string;
+  id: string;
 }
 
-
-const Input = ({onChange, value, label, placeholder}: Props) => {
+const Input = ({ onChange, value, label, placeholder, id }: Props) => {
   const onChangeHandler = (event: ChangeEvent<HTMLInputElement>) => {
-    onChange(event.target.value)
-  }
-  return <div>
-    <label>{label}</label><input onChange={onChangeHandler} placeholder={placeholder} value={value}  />
-  </div>
-}
+    const { value, name } = event.target;
+    onChange(value, name);
+  };
+  return (
+    <div>
+      <label htmlFor={id}>{label}</label>
+      <input
+        onChange={onChangeHandler}
+        placeholder={placeholder}
+        value={value}
+        id={id}
+        name={id}
+      />
+    </div>
+  );
+};
 
-export {
-  Input
-}
+export { Input };
